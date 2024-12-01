@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   day01.cpp                                          :+:      :+:    :+:   */
+/*   day01_p1.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mregrag <mregrag@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 15:52:30 by mregrag           #+#    #+#             */
-/*   Updated: 2024/12/01 17:01:28 by mregrag          ###   ########.fr       */
+/*   Updated: 2024/12/01 17:40:10 by mregrag          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,28 @@ std::string readFile(const std::string& filename)
 	return (buffer.str());
 }
 
+void bubbleSort(std::vector<int>& v)
+{
+	int n = v.size();
+	bool swapped;
+
+	for (int i = 0; i < n - 1; i++)
+	{
+		swapped = false;
+
+		for (int j = 0; j < n - i - 1; j++)
+		{
+			if (v[j] > v[j + 1])
+			{
+				std::swap(v[j], v[j + 1]);
+				swapped = true;
+			}
+		}
+		if (!swapped)
+			break;
+	}
+}
+
 int calculateTotalDistance(const std::string& fileContent)
 {
 	std::istringstream iss(fileContent);
@@ -53,8 +75,8 @@ int calculateTotalDistance(const std::string& fileContent)
 		return (-1);
 	}
 
-	std::sort(leftCol.begin(), leftCol.end());
-	std::sort(rightCol.begin(), rightCol.end());
+	bubbleSort(leftCol);
+	bubbleSort(rightCol);
 
 	int totalDistance = 0;
 	for (size_t i = 0; i < leftCol.size(); ++i)

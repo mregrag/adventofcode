@@ -6,7 +6,7 @@
 /*   By: mregrag <mregrag@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 17:02:54 by mregrag           #+#    #+#             */
-/*   Updated: 2024/12/01 17:13:04 by mregrag          ###   ########.fr       */
+/*   Updated: 2024/12/01 17:15:38 by mregrag          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,14 +46,12 @@ int calculateSimilarityScore(const std::string& fileContent)
 		rightColcount[right]++;
 	}
 
-
 	int similarityScore = 0;
 	for (size_t i = 0; i < leftCol.size(); ++i)
 	{
 		int count = rightColcount[leftCol[i]];
 		similarityScore += leftCol[i] * count;
 	}
-
 	return (similarityScore);
 }
 
