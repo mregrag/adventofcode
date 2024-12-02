@@ -1,15 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   day01_p1.cpp                                       :+:      :+:    :+:   */
+/*   day_02_p1.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mregrag <mregrag@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/01 15:52:30 by mregrag           #+#    #+#             */
-/*   Updated: 2024/12/02 15:30:36 by mregrag          ###   ########.fr       */
+/*   Created: 2024/12/02 15:09:42 by mregrag           #+#    #+#             */
+/*   Updated: 2024/12/02 16:19:57 by mregrag          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <cstddef>
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -26,82 +27,75 @@ std::string readFile(const std::string& filename)
 		std::cout << "Error opening file: " << filename << std::endl;
 		return "";
 	}
-
 	std::stringstream buffer;
 	buffer << file.rdbuf();
 	return (buffer.str());
 }
 
-void bubbleSort(std::vector<int>& v)
+std::vector<int> parseLine(const std::string& line)
 {
-	int n = v.size();
-	bool swapped;
-
-	for (int i = 0; i < n - 1; i++)
-	{
-		swapped = false;
-
-		for (int j = 0; j < n - i - 1; j++)
-		{
-			if (v[j] > v[j + 1])
-			{
-				std::swap(v[j], v[j + 1]);
-				swapped = true;
-			}
-		}
-		if (!swapped)
-			break;
-	}
+	std::vector<int> levels;
+	std::istringstream iss(line);
+	int number;
+	while (iss >> number)
+		levels.push_back(number);
+	return (levels);
 }
 
-int calculateTotalDistance(const std::string& fileContent)
+bool isSafeReport(const std::vector<int>levels)
 {
-	std::istringstream iss(fileContent);
+	bool is_increasing;
+	bool is_decreasing;
+	int diff;
+	if (levels.size() < 2)
+		return (true);
 
-	std::vector<int> leftCol;
-	std::vector<int> rightCol;
-	int left;
-	int right;
+	is_increasing = true;
+	is_decreasing = true;
 
-	while (iss >> left >> right)
+	for(size_t i = 1; i < levels.size(); ++i)
 	{
-		leftCol.push_back(left);
-		rightCol.push_back(right);
+		diff = levels[i] - levels[i - 1];
+		if (std::abs(diff) < 1 || std::abs(diff) > 3)
+			return (false);
+		if (diff > 0)
+			is_decreasing = false;
+		else if (diff < 0)
+			is_increasing = false;
 	}
-
-	if (leftCol.size() != rightCol.size()) 
-	{
-		std::cout << "Error : columns have different sizes" << std::endl;
-		return (-1);
-	}
-
-	bubbleSort(leftCol);
-	bubbleSort(rightCol);
-
-	int totalDistance = 0;
-	for (size_t i = 0; i < leftCol.size(); ++i)
-		totalDistance += std::abs(leftCol[i] - rightCol[i]);
-
-	return (totalDistance);
+	return (is_increasing || is_decreasing);
 }
+
+int numbrreportsafe(const std::string& filecontent)
+{
+	std::istringstream iss(filecontent);
+	std::string line;
+	std::vector<int>levels;
+	int safeCount = 0;
+
+	while (std::getline(iss, line))
+	{
+		levels = parseLine(line);
+		if (isSafeReport(levels))
+			++safeCount;
+	}
+	return (safeCount);
+}
+
 
 int main(int argc, char *argv[])
 {
 	if (argc != 2)
 	{
 		std::cout << "Usage: " << argv[0] << " <filename>" << std::endl;
-		return 1;
+		return (1);
 	}
 
 	std::string fileContent = readFile(argv[1]);
 	if (fileContent.empty())
 		return (1);
-
-	int totalDistance = calculateTotalDistance(fileContent);
-	if (totalDistance == -1)
-		return (1);
-
-	std::cout << "Total Distance: " << totalDistance << std::endl;
+	int reportSafe = numbrreportsafe(fileContent);
+	std::cout << reportSafe << std::endl;
 
 	return (0);
 }
